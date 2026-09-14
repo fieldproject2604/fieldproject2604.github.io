@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Cyber Safety Awareness Survey — a simple, friendly survey about online safety habits. Available in English, Hindi and Marathi." />
+  <meta name="theme-color" content="#0b4a41" />
+  <title>Cyber Safety Survey | साइबर सुरक्षा सर्वेक्षण | सायबर सुरक्षा सर्वेक्षण</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#app" id="skipLink">Skip to survey</a>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <!-- Shield icon (inline SVG, no external dependency) -->
+        <svg class="brand-icon" viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M12 2 4 5.5v5.2c0 5 3.4 9.3 8 10.8 4.6-1.5 8-5.8 8-10.8V5.5L12 2zm-1.2 13.6-3.2-3.2 1.4-1.4 1.8 1.8 4.2-4.2 1.4 1.4-5.6 5.6z"/>
+        </svg>
+        <span class="brand-name" id="brandName">Cyber Safety Survey</span>
+      </div>
+
+      <!-- Language selector: highly visible, no page reload -->
+      <nav class="lang-switch" aria-label="Choose language / भाषा चुनें / भाषा निवडा">
+        <button type="button" class="lang-btn is-active" data-lang="en" aria-pressed="true">English</button>
+        <button type="button" class="lang-btn" data-lang="hi" aria-pressed="false">हिंदी</button>
+        <button type="button" class="lang-btn" data-lang="mr" aria-pressed="false">मराठी</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="app" class="app-main" tabindex="-1" aria-live="off">
+    <!-- All screens (welcome, questions, password lab, review, success)
+         are rendered here by script.js -->
+    <noscript>
+      <section class="card">
+        <h1>Cyber Safety Survey</h1>
+        <p>Please enable JavaScript to take this survey. / कृपया सर्वेक्षण के लिए JavaScript चालू करें। / कृपया सर्वेक्षणासाठी JavaScript चालू करा.</p>
+      </section>
+    </noscript>
+  </main>
+
+  <footer class="app-footer">
+    <p id="footerText">Your answers are anonymous and used only for learning about online safety. 🔒</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
