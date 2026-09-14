@@ -1040,7 +1040,14 @@ async function handleSubmit(e) {
   } catch (err) {
     btn.disabled = false;
     btn.textContent = original;
-    summary.innerHTML = `<span aria-hidden="true">⚠️</span><span>${esc(t("submitFail"))}</span>`;
+    console.error("[survey] submit failed:", err);
+    const detail =
+      err && err.message && /activat/i.test(err.message)
+        ? ` First-time setup: open ${CONFIG.TO_EMAIL || "your inbox"}, click the FormSubmit "Activate" link (check Spam), then submit again.`
+        : err && err.message
+          ? ` (${err.message})`
+          : "";
+    summary.innerHTML = `<span aria-hidden="true">⚠️</span><span>${esc(t("submitFail"))}${esc(detail)}</span>`;
     summary.classList.add("show");
     summary.focus();
   }
@@ -1118,25 +1125,35 @@ function buildPayload() {
 async function submitSurvey(payload) {
   // 1) Email every response to TO_EMAIL via FormSubmit (free, no backend
   //    needed — works on GitHub Pages). First submission triggers a one-time
-  //    activation email to writemate.support@gmail.com — click "Activate".
+  //    activation email to writemate.support@gmail.com — click "Activate",
+  //    then submit once more (the first data is discarded by FormSubmit).
   if (CONFIG.TO_EMAIL) {
     const flat = flattenPayloadForEmail(payload);
-    const res = await fetch(
-      `https://formsubmit.co/ajax/${encodeURIComponent(CONFIG.TO_EMAIL)}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          _subject: `New Cyber Safety Survey response from ${flat["name"] || "Anonymous"}`,
-          _template: "table",
-          _captcha: "false",
-          _replyto: flat["email"] || CONFIG.TO_EMAIL,
-          ...flat,
-        }),
-      }
-    );
+    const res = await fetch(`https://formsubmit.co/ajax/${CONFIG.TO_EMAIL}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        _subject: `New Cyber Safety Survey response from ${flat["name"] || "Anonymous"}`,
+        _template: "table",
+        _captcha: "false",
+        _replyto: flat["email"] || CONFIG.TO_EMAIL,
+        ...flat,
+      }),
+    });
+    let data = null;
+    try {
+      data = await res.json();
+    } catch (e) {
+      if (!res.ok) throw new Error("Email send failed: " + res.status);
+    }
+    console.log("[survey] FormSubmit response:", data);
+    // FormSubmit returns 200 OK even when activation is still pending, e.g.
+    // { success: "false", message: "This form needs Activation..." }
+    if (data && String(data.success).toLowerCase() === "false") {
+      throw new Error(data.message || "Form needs activation. Check inbox.");
+    }
     if (!res.ok) throw new Error("Email send failed: " + res.status);
-    return res.json();
+    return data || { ok: true };
   }
 
   if (!CONFIG.ENDPOINT) {
