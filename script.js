@@ -1083,9 +1083,21 @@ function renderSuccess() {
    ============================================================ */
 function answerDisplay(q) {
   const a = state.answers[q.id];
-  const txt = qt(q);
+  // Always use English options for email/sheet so data is consistent
+  // no matter which language the user filled the form in.
+  const txt = q.i18n.en;
   if (a == null || a === "" || (Array.isArray(a) && !a.length)) return null;
-  if (typeof a === "string") return a;
+  if (typeof a === "string") {
+    // Radio answers are stored as index strings ("0","1",...) — map to text.
+    // Text/email answers are real strings — return as-is.
+    if (q.type === "radio") {
+      const idx = Number(a);
+      if (Number.isInteger(idx) && txt.options && txt.options[idx] != null) {
+        return txt.options[idx];
+      }
+    }
+    return a;
+  }
   if (Array.isArray(a)) return a.map((i) => txt.options[Number(i)]).join("; ");
   if (a.values) {
     const parts = a.values.map((i) => txt.options[Number(i)]);
