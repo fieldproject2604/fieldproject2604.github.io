@@ -20,6 +20,8 @@ const CONFIG = {
   // Example: "https://your-api.example.com/survey"
   // Empty string = demo mode (simulates a successful save).
   ENDPOINT: "",
+  // Email where every survey response will be sent.
+  TO_EMAIL: "writemate.support@gmail.com",
   STORAGE_KEY: "cyberSafetySurveyV1",
 };
 
@@ -1114,6 +1116,29 @@ function buildPayload() {
 }
 
 async function submitSurvey(payload) {
+  // 1) Email every response to TO_EMAIL via FormSubmit (free, no backend
+  //    needed — works on GitHub Pages). First submission triggers a one-time
+  //    activation email to writemate.support@gmail.com — click "Activate".
+  if (CONFIG.TO_EMAIL) {
+    const flat = flattenPayloadForEmail(payload);
+    const res = await fetch(
+      `https://formsubmit.co/ajax/${encodeURIComponent(CONFIG.TO_EMAIL)}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject: `New Cyber Safety Survey response from ${flat["name"] || "Anonymous"}`,
+          _template: "table",
+          _captcha: "false",
+          _replyto: flat["email"] || CONFIG.TO_EMAIL,
+          ...flat,
+        }),
+      }
+    );
+    if (!res.ok) throw new Error("Email send failed: " + res.status);
+    return res.json();
+  }
+
   if (!CONFIG.ENDPOINT) {
     // Demo mode: pretend to save (keeps UI testable offline).
     await new Promise((r) => setTimeout(r, 900));
@@ -1126,6 +1151,30 @@ async function submitSurvey(payload) {
   });
   if (!res.ok) throw new Error("Submit failed: " + res.status);
   return res.json();
+}
+
+/* Flatten the nested payload into "Question -> Answer" pairs so the
+   email you receive is a readable table (FormSubmit _template: table). */
+function flattenPayloadForEmail(payload) {
+  const flat = {
+    language: payload.language,
+    submittedAt: payload.submittedAt,
+  };
+  for (const group of [payload.profile, payload.cyberHygiene, payload.digitalPayments]) {
+    if (!group) continue;
+    for (const id of Object.keys(group)) {
+      const item = group[id];
+      if (!item) continue;
+      // Key = "id — question", value = answer (readable in inbox).
+      flat[`${id} — ${item.question}`] = item.answer ?? "";
+    }
+  }
+  // Shortcuts so subject/reply-to are easy.
+  try {
+    flat["name"] = payload.profile?.name?.answer || "";
+    flat["email"] = payload.profile?.email?.answer || "";
+  } catch (e) {}
+  return flat;
 }
 
 /* ============================================================
