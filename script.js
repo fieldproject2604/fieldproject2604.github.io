@@ -58,6 +58,16 @@ const STRINGS = {
     successTitle: "Survey Submitted!",
     successLead: "Thank you! Your response about kirana-store digital payments has been recorded.",
     successSummary: "✓ You answered {n} questions",
+    guideKicker: "Read before you pay",
+    guideTitle: "5 safety rules for kirana payments",
+    guideLead: "Keep this in mind every time you scan & pay at the shop.",
+    guideTips: [
+      { icon: "🔍", t: "Check amount + name", d: "Always check the amount and shopkeeper name on screen before entering your UPI PIN." },
+      { icon: "🔒", t: "Never share OTP / PIN", d: "No shopkeeper, bank or friend needs your OTP or UPI PIN. Sharing it means fraud." },
+      { icon: "🧾", t: "Verify QR + message", d: "Scan only the shop's own QR, and confirm the success message / sound after payment." },
+      { icon: "📵", t: "Lock phone, avoid open Wi-Fi", d: "Keep screen lock ON. Never pay over free, unknown Wi-Fi at stations or malls." },
+      { icon: "📞", t: "Fraud? Act fast — 1930", d: "Wrong payment or scam? Call 1930 (cyber helpline) and inform your bank immediately." },
+    ],
   },
   hi: {
     skip: "सर्वेक्षण पर जाएँ",
@@ -96,6 +106,16 @@ const STRINGS = {
     successTitle: "सर्वेक्षण जमा हो गया!",
     successLead: "धन्यवाद! किराना दुकान डिजिटल पेमेंट पर आपका जवाब दर्ज हो गया है।",
     successSummary: "✓ आपने {n} सवालों के जवाब दिए",
+    guideKicker: "पेमेंट से पहले पढ़ें",
+    guideTitle: "किराना पेमेंट के 5 सुरक्षा नियम",
+    guideLead: "दुकान पर स्कैन करके पेमेंट करते समय हर बार याद रखें।",
+    guideTips: [
+      { icon: "🔍", t: "रकम + नाम जांचें", d: "UPI PIN डालने से पहले स्क्रीन पर रकम और दुकानदार का नाम ज़रूर देखें।" },
+      { icon: "🔒", t: "OTP / PIN कभी न बताएँ", d: "दुकानदार, बैंक या दोस्त — किसी को OTP या UPI PIN न दें। बताना यानी ठगी।" },
+      { icon: "🧾", t: "QR + मैसेज पक्का करें", d: "सिर्फ दुकान का असली QR स्कैन करें, पेमेंट के बाद सफलता वाला मैसेज / आवाज़ ज़रूर देखें।" },
+      { icon: "📵", t: "फोन लॉक रखें, खुला Wi-Fi टालें", d: "स्क्रीन लॉक चालू रखें। मुफ्त अनजान Wi-Fi पर कभी पेमेंट न करें।" },
+      { icon: "📞", t: "ठगी हो तो तुरंत एक्शन — 1930", d: "गलत पेमेंट या ठगी? तुरंत 1930 (साइबर हेल्पलाइन) पर कॉल करें और बैंक को बताएँ।" },
+    ],
   },
   mr: {
     skip: "सर्वेक्षणाकडे जा",
@@ -134,6 +154,16 @@ const STRINGS = {
     successTitle: "सर्वेक्षण सादर झाले!",
     successLead: "धन्यवाद! किराणा दुकान डिजिटल पेमेंटबद्दल तुमचे उत्तर नोंदवले गेले आहे.",
     successSummary: "✓ तुम्ही {n} प्रश्नांची उत्तरे दिलीत",
+    guideKicker: "पेमेंटआधी वाचा",
+    guideTitle: "किराणा पेमेंटचे 5 सुरक्षा नियम",
+    guideLead: "दुकानात स्कॅन करून पेमेंट करताना दरवेळी लक्षात ठेवा.",
+    guideTips: [
+      { icon: "🔍", t: "रक्कम + नाव तपासा", d: "UPI PIN टाकण्याआधी स्क्रीनवर रक्कम आणि दुकानदाराचे नाव नक्की पाहा." },
+      { icon: "🔒", t: "OTP / PIN कधीही सांगू नका", d: "दुकानदार, बँक वा मित्र — कोणालाही OTP किंवा UPI PIN देऊ नका. सांगणे म्हणजे फसवणूक." },
+      { icon: "🧾", t: "QR + मेसेज खात्री करा", d: "फक्त दुकानाचाच खरा QR स्कॅन करा, पेमेंटनंतर यशस्वी मेसेज / आवाज नक्की पाहा." },
+      { icon: "📵", t: "फोन लॉक ठेवा, मोफत Wi-Fi टाळा", d: "स्क्रीन लॉक चालू ठेवा. मोफत अनोळखी Wi-Fi वर पेमेंट करू नका." },
+      { icon: "📞", t: "फसवणूक? लगेच कृती — 1930", d: "चुकीचे पेमेंट वा फसवणूक? लगेच 1930 (सायबर हेल्पलाइन) वर कॉल करा आणि बँकेला कळवा." },
+    ],
   },
 };
 
@@ -409,6 +439,8 @@ function renderForm() {
       <button class="btn btn-success btn-block" id="submitBtn" type="button">${esc(t("submit"))}</button>
     </section>
 
+    ${guideHTML()}
+
     <div class="sticky-bar" id="stickyBar">
       <div class="sticky-info">
         <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="stickyProg">
@@ -480,6 +512,24 @@ function cardHTML(q) {
       <span class="done-tick" aria-hidden="true">✓</span>
       ${field}
       <div class="error-box" id="err-${q.id}" tabindex="-1"></div>
+    </section>`;
+}
+
+/* ---------- Safety guide below the submit button ---------- */
+function guideHTML() {
+  const tips = (STRINGS[state.lang] && STRINGS[state.lang].guideTips) || STRINGS.en.guideTips || [];
+  return `
+    <section class="card guide-card" aria-labelledby="guideTitle">
+      <p class="guide-kicker">${esc(t("guideKicker"))}</p>
+      <h2 class="guide-title" id="guideTitle">🛡️ ${esc(t("guideTitle"))}</h2>
+      <p class="guide-lead">${esc(t("guideLead"))}</p>
+      <ol class="guide-list">
+        ${tips.map((g) => `
+          <li class="guide-item">
+            <span class="guide-icon" aria-hidden="true">${esc(g.icon)}</span>
+            <span class="guide-text"><strong>${esc(g.t)}</strong><span>${esc(g.d)}</span></span>
+          </li>`).join("")}
+      </ol>
     </section>`;
 }
 

@@ -553,9 +553,72 @@ legend { padding: 0; margin-bottom: 4px; width: 100%; max-width: 100%; }
   margin-bottom: 22px;
 }
 
+/* ---------- Safety guide (below submit button) ---------- */
+.guide-card {
+  margin-top: 16px;
+  border: 0;
+  color: #fff;
+  background:
+    radial-gradient(300px 180px at 95% 0%, rgba(45, 212, 191, 0.45) 0%, transparent 70%),
+    radial-gradient(360px 220px at 0% 100%, rgba(245, 158, 11, 0.3) 0%, transparent 65%),
+    linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #0b5e56 130%);
+  box-shadow: 0 2px 6px rgba(30, 27, 58, 0.2), 0 16px 40px rgba(49, 46, 129, 0.35);
+}
+.guide-kicker {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin: 0 0 10px;
+}
+.guide-title { font-size: 21px; line-height: 1.35; margin: 0 0 6px; }
+.guide-lead { font-size: 15px; color: #d9d7f5; margin: 0 0 16px; }
+.guide-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  counter-reset: guide;
+}
+.guide-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+  padding: 12px 14px;
+  backdrop-filter: blur(4px);
+}
+.guide-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: rgba(255, 255, 255, 0.96);
+  flex-shrink: 0;
+}
+.guide-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.guide-text strong { font-size: 15.5px; line-height: 1.4; }
+.guide-text span { font-size: 14px; color: #e6e6fa; line-height: 1.55; }
+
 /* ---------- Responsive ---------- */
 @media (min-width: 560px) {
   .card { padding: 30px 30px; }
+  .guide-card { padding: 30px 30px; }
+  .guide-title { font-size: 23px; }
+  .guide-list { grid-template-columns: 1fr 1fr; }
+  .guide-item:last-child { grid-column: 1 / -1; }
   .hero h1 { font-size: 32px; }
   .hero { padding: 38px 34px; }
   .options-grid { grid-template-columns: 1fr 1fr; }
